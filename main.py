@@ -1,40 +1,52 @@
 import requests
+import time
+from urllib.parse import quote_plus
 from bs4 import BeautifulSoup
 
 
 def formatString(string: str):
-    modified = string.lower().strip()
-    modified = modified.replace(' ', '+')
-    return modified
+    return quote_plus(string.lower().strip())
 
 def formURL(job_tilte: str, location: str, page_no: int):
-    start = (page_no - 1) * 10
+    start = max(0, (page_no - 1) * 10)
     url = f'https://eg.indeed.com/jobs?q={formatString(job_tilte)}&l={formatString(location)}&radius=25&from=searchOnDesktopSerp'
 
     if page_no > 1:
-        url += f'start={start}'
+        url += f'&start={start}'
 
     return url
 
 
 def main():
-    url = formURL('Data analyst', 'remote', 0)
+    # url = formURL('Data Analyst', 'remote', 1)
+    url = "https://wuzzuf.net/search/jobs/?q=data"
     print(url)
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.5993.118 Safari/537.36",
+    # headers = {
+    #     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.5993.118 Safari/537.36",
+    #     "Accept-Language": "en-US,en;q=0.9",
+    #     "Accept-Encoding": "gzip, deflate, br",
+    #     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+    #     "Connection": "keep-alive"
+    # }
+    #
+    # proxies = {
+    #     "http": "http://123.123.123.123:8080",
+    #     "https": "http://123.123.123.123:8080"
+    # }
+    session = requests.Session()
+
+    session.headers.update({
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
         "Accept-Language": "en-US,en;q=0.9",
+        "Referer": "https://www.google.com/",
         "Accept-Encoding": "gzip, deflate, br",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
         "Connection": "keep-alive"
-    }
-
-    proxies = {
-        "http": "http://123.123.123.123:8080",
-        "https": "http://123.123.123.123:8080"
-    }
+    })
 
     try:
-        response = requests.get(url, headers=headers, timeout=15)
+        time.sleep(2)
+        response = session.get(url, timeout=15)
         response.raise_for_status()
     except requests.exceptions.HTTPError as http_err:
         if response.status_code == 403:
@@ -50,6 +62,21 @@ def main():
     else:
         print("Request successful!")
         print(response.status_code)
+        print(response.content)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        title = soup.find('title').contents[0]
+        print(title)
+        num = ''
+        title_text = title.text
+        for i in range(len(title_text)):
+            if title_text[i] == ' ':
+                break
+            if title_text[i] == ',':
+                pass
+            else:
+                num += title_text[i]
+
+        print(int(num) - 1)
 
 
 
