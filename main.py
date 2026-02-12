@@ -18,21 +18,7 @@ def formURL(job_tilte: str, location: str, page_no: int):
 
 
 def main():
-    # url = formURL('Data Analyst', 'remote', 1)
     url = "https://wuzzuf.net/search/jobs/?q=data"
-    print(url)
-    # headers = {
-    #     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.5993.118 Safari/537.36",
-    #     "Accept-Language": "en-US,en;q=0.9",
-    #     "Accept-Encoding": "gzip, deflate, br",
-    #     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-    #     "Connection": "keep-alive"
-    # }
-    #
-    # proxies = {
-    #     "http": "http://123.123.123.123:8080",
-    #     "https": "http://123.123.123.123:8080"
-    # }
     session = requests.Session()
 
     session.headers.update({
@@ -53,12 +39,6 @@ def main():
             print("Access forbidden. The website is blocking automated requests.")
         else:
             print(f"HTTP error occurred: {http_err}")
-    except requests.exceptions.ConnectionError as conn_err:
-        print(f"Connection error occurred: {conn_err}")
-    except requests.exceptions.Timeout as timeout_err:
-        print(f"Timeout error occurred: {timeout_err}")
-    except requests.exceptions.RequestException as req_err:
-        print(f"Some other request error occurred: {req_err}")
     else:
         print("Request successful!")
         print(response.status_code)
@@ -79,6 +59,10 @@ def main():
         print(int(num) - 1)
 
 
+        cards = soup.find_all('div', {'class':'css-ghe2tq'})
+        print(cards)
+        print(len(cards))
+
 
 
 
@@ -86,3 +70,18 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+
+
+
+
+
+'''
+    except requests.exceptions.ConnectionError as conn_err:
+        print(f"Connection error occurred: {conn_err}")
+    except requests.exceptions.Timeout as timeout_err:
+        print(f"Timeout error occurred: {timeout_err}")
+    except requests.exceptions.RequestException as req_err:
+        print(f"Some other request error occurred: {req_err}")
+'''
