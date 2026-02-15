@@ -124,21 +124,24 @@ class wuzzufScraper:
 
         return info
 
-
-    def _normalize(self, denormalized_info: dict):
+    def _normalize(self, denormalized_info: dict) -> list[dict]:
         normalized: list[dict] = []
-        skills: list = denormalized_info['skills']
-        for i in range(len(skills)):
-            info: dict = {}
-            info['job_title'] = denormalized_info['job_title']
-            info['company'] = denormalized_info['company']
-            info['loc'] = denormalized_info['loc']
-            info['posting_recency'] = denormalized_info['posting_recency']
-            info['employment_type'] = denormalized_info['employment_type']
-            info['work_arrangement_type'] = denormalized_info['work_arrangement_type']
-            info['experience_lvl'] = denormalized_info['experience_lvl']
-            info['years_of_experience'] = denormalized_info['years_of_experience']
-            info['skill'] = skills[i]
+
+        skills = denormalized_info.get('skills', [])
+
+        for skill in skills:
+            info = {
+                'job_title': denormalized_info.get('job_title'),
+                'company': denormalized_info.get('company'),
+                'loc': denormalized_info.get('loc'),
+                'posting_recency': denormalized_info.get('posting_recency'),
+                'employment_type': denormalized_info.get('employment_type'),
+                'work_arrangement_type': denormalized_info.get('work_arrangement_type'),
+                'experience_lvl': denormalized_info.get('experience_lvl'),
+                'years_of_experience': denormalized_info.get('years_of_experience'),
+                'skill': skill
+            }
+
             normalized.append(info)
 
         return normalized
