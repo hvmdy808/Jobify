@@ -5,15 +5,19 @@ from bs4 import BeautifulSoup
 from src.scraper import wuzzufScraper
 from src.config import Titles
 from src.config import urls
+from src.CSVLS import CSV
 
 
 def main():
     scraper = wuzzufScraper()
     result = scraper.scrape(titles= Titles, base_url= urls[0])
-    for row in result:
-        print(row)
+    # for row in result:
+    #     print(row)
 
     print((len(result)))
+
+    csv = CSV()
+    csv.save(data= result, filename= 'initial')
 
 
 

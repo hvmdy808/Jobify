@@ -154,10 +154,10 @@ class wuzzufScraper:
             pages.clear()
             pages.append(self._sendRequest(base_url= base_url, title= titles[i], page_no= 1))
             jobs_no = self._getNoOfJobs(response= pages[0])
-            #print(f'Number of found job: {jobs_no}')
+            print(f'Number of found job: {jobs_no}')
             remaining_pages = math.ceil(jobs_no / 15) - 1
             # remaining_pages = 3
-            #print(f'Pages: {remaining_pages+1}')
+            print(f'Pages: {remaining_pages+1}')
             for j in range(remaining_pages):
                 pages.append(self._sendRequest(base_url=base_url, title=titles[i], page_no= j + 2))
 
@@ -165,7 +165,7 @@ class wuzzufScraper:
                 soup = BeautifulSoup(pages[k].content, 'html.parser')
                 cards = soup.find_all('div', {'class':'css-ghe2tq'})
                 for l in range(len(cards)):
-                    #print(f'Current page: {k + 1}, Current card: {l + 1}')
+                    print(f'Current page: {k + 1}, Current card: {l + 1}')
                     denormalized: dict = self._getData(card= cards[l])
                     normalized: list[dict] = self._normalize(denormalized)
                     final.extend(normalized)
