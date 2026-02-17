@@ -74,9 +74,10 @@ class wuzzufScraper:
         element = parent.find(tag, attrs or {})
         return element.get_text(strip=True) if element else default
 
-    def _getData(self, card: BeautifulSoup):
+    def _getData(self, card: BeautifulSoup, title: str):
         info: dict = {}
 
+        info['search_query'] = title
         info['job_title'] = self._safe_text(
             card, 'a', {'rel': 'noreferrer', 'class': 'css-o171kl'}
         )
@@ -102,7 +103,11 @@ class wuzzufScraper:
             if len(divs) > 1:
                 div = divs[1]
                 info['experience_lvl'] = self._safe_text(div, 'a')
-                info['years_of_experience'] = self._safe_text(div, 'span')
+                span = div.find('span', recursive= False)
+                if span:
+                    info['years_of_experience'] = (span.get_text(strip=True) if span.parent == div else None)
+                else:
+                    info['years_of_experience'] = None
 
                 a_list = div.find_all('a', recursive=False)
 
@@ -131,6 +136,7 @@ class wuzzufScraper:
 
         for skill in skills:
             info = {
+                'search_query': denormalized_info.get('search_query'),
                 'job_title': denormalized_info.get('job_title'),
                 'company': denormalized_info.get('company'),
                 'loc': denormalized_info.get('loc'),
@@ -166,7 +172,7 @@ class wuzzufScraper:
                 cards = soup.find_all('div', {'class':'css-ghe2tq'})
                 for l in range(len(cards)):
                     print(f'Current page: {k + 1}, Current card: {l + 1}')
-                    denormalized: dict = self._getData(card= cards[l])
+                    denormalized: dict = self._getData(card= cards[l], title= titles[i])
                     normalized: list[dict] = self._normalize(denormalized)
                     final.extend(normalized)
 
