@@ -1,24 +1,25 @@
-import requests
-import time
-from urllib.parse import quote_plus
-from bs4 import BeautifulSoup
 from src.scraper import wuzzufScraper
 from src.config import Titles
 from src.config import urls
 from src.CSVLS import CSV
+from src.WuzzufCleaner import WuzzufCleaner
+import pandas as pd
 
 
 def main():
     scraper = wuzzufScraper()
     result = scraper.scrape(titles= Titles, base_url= urls[0])
-    # for row in result:
-    #     print(row)
 
     print((len(result)))
 
     csv = CSV()
     csv.save(data= result, filename= 'initial')
 
+    cleaner = WuzzufCleaner()
+    cleaner.clean(data= 'initial', filename= 'cleaned')
+
+    df = pd.read_csv(f'D:\\Projects\\PycharmProjects\\Jobify\\data\\cleaned.csv')
+    df.info()
 
 
 
